@@ -16,43 +16,69 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation":
+                                      "$projectDir/schemas".toString()]
+            }
+        }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            }
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+        kotlinOptions {
+            jvmTarget = '1.8'
+        }
+        buildFeatures {
+
+            viewBinding = true
+
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+    dependencies {
+
+        //차트 라이브러리(꺽은선)
+        implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+        //프로그래스 바
+        implementation 'com.github.iammert:TileProgressView:0.1'
+        //Room
+
+        def room_version = "2.2.4"
+
+        //noinspection GradleDependency
+        implementation "androidx.room:room-runtime:$room_version"
+        kapt "androidx.room:room-compiler:$room_version"
+
+        // optional - Kotlin Extensions and Coroutines support for Room
+        //noinspection GradleDependency
+        implementation "androidx.room:room-ktx:$room_version"
+
+        // optional - Test helpers
+        //noinspection GradleDependency
+        testImplementation "androidx.room:room-testing:$room_version"
+
+        //코루틴
+        implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.0"
+
+        //liveData
+        implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        implementation 'androidx.core:core-ktx:1.3.2'
+        implementation 'androidx.appcompat:appcompat:1.2.0'
+        implementation 'com.google.android.material:material:1.3.0'
+        implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+        testImplementation 'junit:junit:4.13.2'
+        androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+        androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    buildFeatures {
-
-        viewBinding = true
-
-    }
-}
-
-dependencies {
-
-    //차트 라이브러리(꺽은선)
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-//프로그래스 바
-    implementation 'com.github.iammert:TileProgressView:0.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.3.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
