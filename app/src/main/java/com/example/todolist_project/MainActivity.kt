@@ -1,8 +1,11 @@
 package com.example.todolist_project
 
-import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.todolist_project.Recy.ReMainViewAdapter
+import com.example.todolist_project.Recy.ReMainViewModel
 import com.example.todolist_project.databinding.ActivityMainBinding
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -12,22 +15,58 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
-class MainActivity : AppCompatActivity(),BottomSheetDialog.BottomSheetDialogClickListener {
+class MainActivity : AppCompatActivity(), BottomSheetDialog.BottomSheetDialogClickListener {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var bottomSheetDialogClickListener: BottomSheetDialog.BottomSheetDialogClickListener
+
+    var mainList = ArrayList<ReMainViewModel>()
+
+    // 어뎁터
+    private lateinit var ReMainViewAdapter: ReMainViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        supportActionBar?.setDisplayShowTitleEnabled(false);
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         liveChart()
 
-        binding.fab.setOnClickListener() {
+        ReMainViewAdapter = ReMainViewAdapter(mainList)
+        binding.recyclerViewMain.apply {
 
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+
+
+            adapter = ReMainViewAdapter
+        }
+
+
+
+        binding.fab.setOnClickListener() {
+            val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog()
+            bottomSheetDialog.show(supportFragmentManager, "")
 
         }
+
+        if (intent.hasExtra("goal")) {
+            val goal = intent.getStringExtra("goal")
+            val time = intent.getStringExtra("time")
+            val day = intent.getStringExtra("day")
+            if (R.id.goal_text!=null ) {
+                val myModel = ReMainViewModel(
+                goal,time,day
+                )
+                mainList.add(0, myModel)
+                ReMainViewAdapter.notifyDataSetChanged()
+            }
+        } else {
+            Toast.makeText(this, "intent Error!", Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 
 
@@ -51,7 +90,7 @@ class MainActivity : AppCompatActivity(),BottomSheetDialog.BottomSheetDialogClic
             legend.apply {
                 textSize = 15f
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
-                horizontalAlignment = Legend.LegendHorizontalAlignment.valueOf(bottom.toString())
+                horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
                 orientation = Legend.LegendOrientation.HORIZONTAL
                 setDrawInside(true)
             }
