@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerView_main"
         android:layout_width="match_parent"
         android:layout_height="455dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,9 +61,9 @@
         android:layout_marginTop="384dp"
         android:contentDescription="추가"
         android:src="@drawable/ic_baseline_add_24"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView_main"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recyclerView" />
+        app:layout_constraintTop_toTopOf="@+id/recyclerView_main" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
