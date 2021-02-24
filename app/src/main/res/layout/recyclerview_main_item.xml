@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/goal_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="목표"
+        android:paddingLeft="30dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/tileProgressView"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/re_main_day_text"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="날짜"
+        app:layout_constraintEnd_toStartOf="@+id/re_main_time_text"
+        app:layout_constraintTop_toBottomOf="@+id/tileProgressView" />
+    <TextView
+        android:id="@+id/re_main_time_text"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="시간"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/tileProgressView"
+        app:layout_constraintTop_toBottomOf="@+id/tileProgressView" />
+
+
+    <com.iammert.tileprogressview.TiledProgressView
+        android:id="@+id/tileProgressView"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_margin="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.038" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
