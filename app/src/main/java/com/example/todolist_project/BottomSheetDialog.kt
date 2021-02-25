@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import com.example.todolist_project.Recy.ReMainViewHolder
 import com.example.todolist_project.Room.Main
 import com.example.todolist_project.Room.MainDatabase
 import com.example.todolist_project.databinding.BottomsheetdialogBinding
@@ -36,6 +37,7 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
     interface BottomSheetDialogClickListener {
         fun onButton()
 
+
     }
 
 
@@ -52,8 +54,6 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
 
 
 
-
-
         return view
 
 
@@ -67,37 +67,38 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
         val db = Room.databaseBuilder(context!!, MainDatabase::class.java, "Main")
             .fallbackToDestructiveMigration()
             .build()
-
+        val intent = Intent(context, MainActivity::class.java)
         timedialog()
 
         daydialog()
 
         binding.timeSave.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
+
+
             lifecycleScope.launch(Dispatchers.IO) {
 
-                val day = intent.getStringExtra("day_room")
-                val time = intent.getStringExtra("time_room")
+
                 db.mainDao().insert(
                     Main(
                         db_goal = binding.timeGoal.text.toString(),
-                        db_time = time,
-                        db_day = day
+                        db_time = binding.timeButonText.text.toString(),
+                        db_day = binding.dayButonText.text.toString()
                     )
                 )
 
-                intent.putExtra("goal", binding.timeGoal.text)
-                Log.d(TAG, "goal: ${binding.timeGoal.text} ")
-                intent.putExtra("time",day)
-                Log.d(TAG, "time: $day ")
-                intent.putExtra("day", time)
-                Log.d(TAG, "day: $time")
-                save()
             }
+
+
+            intent.putExtra("goal", binding.timeGoal.text.toString())
+            Log.d(TAG, "goal: ${binding.timeGoal.text} ")
+            intent.putExtra("time", binding.timeButonText.text.toString())
+            Log.d(TAG, "time: ${binding.timeButonText.text} ")
+            intent.putExtra("day", binding.dayButonText.text.toString())
+            Log.d(TAG, "day: ${binding.dayButonText.text}")
+
             startActivity(intent)
 
         }
-
 
 
     }
@@ -106,7 +107,6 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
     fun daydialog() {
         binding.dayButonText.setOnClickListener {
 
-            var intent = Intent()
 
             var calendar = Calendar.getInstance()
             var year = calendar.get(Calendar.YEAR)
@@ -115,12 +115,10 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
 
             var listener = DatePickerDialog.OnDateSetListener { datePicker, i, i2, i3 ->
                 // i년 i2월 i3일
-                var day_text = binding.dayButonText.text
                 binding.dayButonText.text = " ${i2 + 1}월 ${i3}일"
-                intent.putExtra("day_room", day_text)
-                Log.d(TAG,  " ${i2 + 1}월 ${i3}일")
-            }
 
+                Log.d(TAG, " ${i2 + 1}월 ${i3}일")
+            }
             var picker = DatePickerDialog(context!!, listener, year, month, day)
             picker.show()
 
@@ -130,25 +128,23 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
     }
 
 
-
-
-
     fun timedialog() {
 
-
         binding.timeButonText.setOnClickListener {
-            var intent = Intent()
+            val intent = Intent(context, ReMainViewHolder::class.java)
 
             var calendar = Calendar.getInstance()
             var hour = calendar.get(Calendar.HOUR)
             var minute = calendar.get(Calendar.MINUTE)
 
+            var time: Int = 0
             var listener = TimePickerDialog.OnTimeSetListener { timePicker, i, i2 ->
-                var time_text =  binding.timeButonText.text
                 binding.timeButonText.text = "${i}시 ${i2}분"
-                intent.putExtra("time_room", time_text)
+                time = i
                 Log.d(TAG, "${i}시 ${i2}분")
             }
+            intent.putExtra("time_holder", time)
+
 
             var picker = TimePickerDialog(context!!, listener, hour, minute, false) // true하면 24시간 제
             picker.show()
@@ -185,6 +181,8 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
 
     }
 }
+
+
 
 
 

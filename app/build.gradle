@@ -50,7 +50,7 @@ android {
         implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
         //프로그래스 바
-        implementation 'com.github.iammert:TileProgressView:0.1'
+        implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
         //Room
 
         def room_version = "2.2.4"

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "88f4da76d7fbb5a3ca8fbbf9c9f6aec9",
+    "identityHash": "09cba8cceb3d164ed9f563ba147dc58a",
     "entities": [
       {
         "tableName": "Main",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `db_goal` TEXT NOT NULL, `db_time` TEXT, `db_day` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `db_goal` TEXT, `db_time` TEXT, `db_day` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -18,7 +18,7 @@
             "fieldPath": "db_goal",
             "columnName": "db_goal",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "db_time",
@@ -46,7 +46,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '88f4da76d7fbb5a3ca8fbbf9c9f6aec9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '09cba8cceb3d164ed9f563ba147dc58a')"
     ]
   }
 }

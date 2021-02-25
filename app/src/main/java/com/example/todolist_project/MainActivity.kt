@@ -1,7 +1,7 @@
 package com.example.todolist_project
 
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist_project.Recy.ReMainViewAdapter
@@ -14,11 +14,15 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import kotlin.concurrent.timer
 
 class MainActivity : AppCompatActivity(), BottomSheetDialog.BottomSheetDialogClickListener {
 
-    private lateinit var binding: ActivityMainBinding
 
+
+
+    private lateinit var binding: ActivityMainBinding
+    private val TAG = "MainActivity"
     var mainList = ArrayList<ReMainViewModel>()
 
     // 어뎁터
@@ -51,23 +55,31 @@ class MainActivity : AppCompatActivity(), BottomSheetDialog.BottomSheetDialogCli
 
         }
 
-        if (intent.hasExtra("goal")) {
-            val goal = intent.getStringExtra("goal")
+
+        if (intent.hasExtra("goal") && intent.hasExtra("time") && intent.hasExtra("day")){
+            Log.d(TAG, "onCreate: recevie")
+
+            var goal = intent.getStringExtra("goal")
+            Log.d(TAG, "main_goal : $goal")
             val time = intent.getStringExtra("time")
+            Log.d(TAG, "main_time : $time")
             val day = intent.getStringExtra("day")
-            if (R.id.goal_text!=null ) {
-                val myModel = ReMainViewModel(
-                goal,time,day
-                )
-                mainList.add(0, myModel)
-                ReMainViewAdapter.notifyDataSetChanged()
-            }
-        } else {
-            Toast.makeText(this, "intent Error!", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "day : $day")
+
+            val mainmodel = ReMainViewModel(
+                goal, time, day,
+            )
+            mainList.add(0, mainmodel)
+            ReMainViewAdapter.notifyDataSetChanged()
+
+        }else{
+            Log.d(TAG, "onCreate: 값 전달 실페")
         }
 
-
     }
+
+
+
 
 
     private fun liveChart() {

@@ -10,6 +10,7 @@ class ReMainViewAdapter(
 )
 
     : RecyclerView.Adapter<ReMainViewHolder>() {
+
     private var mainList = ArrayList<ReMainViewModel>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReMainViewHolder {
 
@@ -18,10 +19,15 @@ class ReMainViewAdapter(
 
     override fun onBindViewHolder(holder: ReMainViewHolder, position: Int) {
         holder.bind(mainList[position])
+
+
+
     }
 
     override fun getItemCount(): Int {
         return mainList.size
 
     }
+
+
 }

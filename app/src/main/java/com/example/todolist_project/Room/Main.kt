@@ -8,7 +8,7 @@ class Main(
 
     val db_goal: String,
     val db_time: String?,
-    val db_day:String?
+    val db_day: String?
 ) {
 
     @PrimaryKey(autoGenerate=true) var id: Int=0
