@@ -1,11 +1,17 @@
 package com.example.todolist_project
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.example.todolist_project.Recy.ReMainViewAdapter
 import com.example.todolist_project.Recy.ReMainViewModel
+import com.example.todolist_project.Room.Main
+import com.example.todolist_project.Room.MainDatabase
 import com.example.todolist_project.databinding.ActivityMainBinding
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -14,38 +20,117 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import kotlin.concurrent.timer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MainActivity : AppCompatActivity(), BottomSheetDialog.BottomSheetDialogClickListener {
-
-
-
 
     private lateinit var binding: ActivityMainBinding
     private val TAG = "MainActivity"
     var mainList = ArrayList<ReMainViewModel>()
+    private var maindb: MainDatabase? = null
 
     // 어뎁터
-    private lateinit var ReMainViewAdapter: ReMainViewAdapter
+    lateinit var ReMainViewAdapter: ReMainViewAdapter
+
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        supportActionBar?.setDisplayShowTitleEnabled(false) //기존바 제거
 
         liveChart()
 
-        ReMainViewAdapter = ReMainViewAdapter(mainList)
+        ReMainViewAdapter = ReMainViewAdapter(this.mainList)
+        ReMainViewAdapter.submitList(mainList)
         binding.recyclerViewMain.apply {
-
-            layoutManager =
+            this.layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-
-
+            setHasFixedSize(true)
             adapter = ReMainViewAdapter
         }
+
+        // 현재시간을 가져오기
+        val now: Long = System.currentTimeMillis()
+
+// 현재 시간을 Date 타입으로 변환
+        val date = Date(now)
+
+// 날짜, 시간을 가져오고 싶은 형태 선언
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd ", Locale("ko", "KR"))
+
+// 현재 시간을 dateFormat 에 선언한 형태의 String 으로 변환
+        binding.calendarText.text = dateFormat.format(date)
+
+
+//        val r = Runnable {
+//            try {
+//                mainList = maindb?.mainDao()?.getAll()
+//                ReMainViewAdapter = ReMainViewAdapter(this.mainList)
+//                ReMainViewAdapter.submitList(mainList)
+//                ReMainViewAdapter.notifyDataSetChanged()
+//
+//                binding.recyclerViewMain.apply {
+//                    layoutManager =
+//                        LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+//                    setHasFixedSize(true)
+//                    adapter = ReMainViewAdapter
+//                }
+//            } catch (e: Exception) {
+//                Log.d("tag", "Error - $e")
+//            }
+//        } // thread 사용
+
+        dataRoom()
+
+
+        /*  var started = false
+
+          open class timer {
+
+              var time: String? = null
+              var day: String? = null
+              fun start() {
+
+                  started = true
+                  val intent = Intent()
+                  var timeStart = intent.getIntExtra("time_dialog", 0)
+                  var dayStart = intent.getIntExtra("day_dialog", 0)
+                  Log.d(TAG, "start: timeStart : $timeStart dayStart : $dayStart")
+                  thread(start = true) {
+                      while (started) {
+                          Thread.sleep(1000)
+                          timeStart -= 1
+                          if (timeStart == 0) {
+                              dayStart -= 1
+                              if (timeStart == 0 && dayStart == 0) {
+                                  Toast.makeText(
+                                      applicationContext,
+                                      "시간이 종료 되었습니다.",
+                                      Toast.LENGTH_SHORT
+                                  ).show()
+                              }
+                          }
+                          runOnUiThread {
+                              time = "$timeStart 분"
+                              day = "$dayStart 분"
+                          }
+                      }
+
+                  }
+              }
+          }
+
+         */
+
 
 
 
@@ -53,34 +138,63 @@ class MainActivity : AppCompatActivity(), BottomSheetDialog.BottomSheetDialogCli
             val bottomSheetDialog: BottomSheetDialog = BottomSheetDialog()
             bottomSheetDialog.show(supportFragmentManager, "")
 
+
         }
-
-
-        if (intent.hasExtra("goal") && intent.hasExtra("time") && intent.hasExtra("day")){
-            Log.d(TAG, "onCreate: recevie")
-
-            var goal = intent.getStringExtra("goal")
-            Log.d(TAG, "main_goal : $goal")
-            val time = intent.getStringExtra("time")
-            Log.d(TAG, "main_time : $time")
-            val day = intent.getStringExtra("day")
-            Log.d(TAG, "day : $day")
-
-            val mainmodel = ReMainViewModel(
-                goal, time, day,
-            )
-            mainList.add(0, mainmodel)
-            ReMainViewAdapter.notifyDataSetChanged()
-
-        }else{
-            Log.d(TAG, "onCreate: 값 전달 실페")
-        }
-
     }
 
 
+    fun dataRoom() {
+
+        if (intent.hasExtra("goal") && intent.hasExtra("time") && intent.hasExtra("day")) {
+
+            Log.d(TAG, "onCreate: recevie")
+            var goal = intent.getStringExtra("goal")
+            Log.d(TAG, "main_goal : $goal")
+            var time_intent = intent.getStringExtra("time")
+            Log.d(TAG, "main_time : $time_intent")
+            var day_intent = intent.getStringExtra("day")
+            Log.d(TAG, "day : $day_intent")
+
+            //db 만듬
+            val db = Room.databaseBuilder(
+                applicationContext, MainDatabase::class.java, "Main"
+            ).build()
 
 
+            //테이블 만듬
+            //아마 여기가 틀린 듯
+            db.mainDao().getAll().observe(this, Observer { mains ->
+                goal = mains.toString()
+                time_intent = mains.toString()
+                day_intent = mains.toString()
+            })
+
+            //추가함
+            lifecycleScope.launch(Dispatchers.IO) {
+                db.mainDao().insert(
+                    Main(
+                        null, goal, time_intent, day_intent
+                    )
+                )
+            }
+
+
+            //list에 넣음
+            val mainModel = ReMainViewModel(
+                time_intent, goal, day_intent
+            )
+
+            //list추가
+            mainList.add(0, mainModel)
+            //변동사항 알려야함
+            ReMainViewAdapter.notifyDataSetChanged()
+            Log.d(TAG, "intent_Data: $mainModel")
+            Log.d(TAG, "intent_Data: $mainList")
+
+        } else {
+            Log.d(TAG, "onCreate: 값 전달 실페")
+        }
+    }
 
     private fun liveChart() {
 
@@ -181,6 +295,8 @@ class MainActivity : AppCompatActivity(), BottomSheetDialog.BottomSheetDialogCli
 
     override fun onButton() {
 
+        Log.d(TAG, "onButton: BottomSheetDialog")
     }
 
 }
+

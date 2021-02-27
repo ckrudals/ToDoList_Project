@@ -19,18 +19,21 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             app:layout_anchor="@+id/topAppBar"
             app:layout_anchorGravity="bottom|center">
             <TextView
+
                 android:id="@+id/calendar_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|center_horizontal"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 android:paddingRight="30dp"
-                android:textSize="30dp"
-                android:text="2020-02-23" />
+                android:textSize="30sp"
+                android:text="@string/_2020_02_23"
+                android:paddingEnd="30dp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

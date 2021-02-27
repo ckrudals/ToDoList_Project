@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
-import com.example.todolist_project.Recy.ReMainViewHolder
 import com.example.todolist_project.Room.Main
 import com.example.todolist_project.Room.MainDatabase
 import com.example.todolist_project.databinding.BottomsheetdialogBinding
@@ -28,13 +27,13 @@ import java.util.*
 @Suppress("CAST_NEVER_SUCCEEDS", "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 
 class BottomSheetDialog : BottomSheetDialogFragment() {
-
-
+    private var maindb: MainDatabase? = null
     private var _binding: BottomsheetdialogBinding? = null
     private val binding get() = _binding!!
     private lateinit var bottomSheetDialogClickListener: BottomSheetDialogClickListener
 
     interface BottomSheetDialogClickListener {
+
         fun onButton()
 
 
@@ -52,8 +51,6 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
         _binding = BottomsheetdialogBinding.inflate(inflater, container, false)
         val view = binding.root
 
-
-
         return view
 
 
@@ -64,29 +61,38 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
 
 
+        maindb = MainDatabase.getInstance(context!!)
+
         val db = Room.databaseBuilder(context!!, MainDatabase::class.java, "Main")
             .fallbackToDestructiveMigration()
             .build()
         val intent = Intent(context, MainActivity::class.java)
-        timedialog()
 
+        timedialog()
         daydialog()
+
+//        val addRunnable = Runnable {
+//            val newCat = Main()
+//            newCat.db_goal = binding.timeGoal.text.toString()
+//            newCat.db_time = binding.timeButonText.text.toString()
+//            newCat.db_day = binding.dayButonText.text.toString()
+//            maindb?.mainDao()?.insert(newCat)
+//        }
 
         binding.timeSave.setOnClickListener {
 
-
             lifecycleScope.launch(Dispatchers.IO) {
-
 
                 db.mainDao().insert(
                     Main(
-                        db_goal = binding.timeGoal.text.toString(),
-                        db_time = binding.timeButonText.text.toString(),
-                        db_day = binding.dayButonText.text.toString()
+                        null,
+                        binding.timeGoal.text.toString(),
+                        binding.timeButonText.text.toString(),
+                        binding.dayButonText.text.toString()
                     )
                 )
 
-            }
+            } //비동기 처리
 
 
             intent.putExtra("goal", binding.timeGoal.text.toString())
@@ -95,9 +101,19 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
             Log.d(TAG, "time: ${binding.timeButonText.text} ")
             intent.putExtra("day", binding.dayButonText.text.toString())
             Log.d(TAG, "day: ${binding.dayButonText.text}")
-
+//            val addThread = Thread(addRunnable)
+//            addThread.start()
             startActivity(intent)
 
+
+        }
+
+        binding.timeDelete.setOnClickListener {
+
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.remove(this)
+                ?.commit()
         }
 
 
@@ -107,7 +123,7 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
     fun daydialog() {
         binding.dayButonText.setOnClickListener {
 
-
+            val intent = Intent()
             var calendar = Calendar.getInstance()
             var year = calendar.get(Calendar.YEAR)
             var month = calendar.get(Calendar.MONTH)
@@ -118,8 +134,11 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
                 binding.dayButonText.text = " ${i2 + 1}월 ${i3}일"
 
                 Log.d(TAG, " ${i2 + 1}월 ${i3}일")
+                intent.putExtra("time_dialog", day)
             }
+
             var picker = DatePickerDialog(context!!, listener, year, month, day)
+
             picker.show()
 
         }
@@ -131,26 +150,24 @@ class BottomSheetDialog : BottomSheetDialogFragment() {
     fun timedialog() {
 
         binding.timeButonText.setOnClickListener {
-            val intent = Intent(context, ReMainViewHolder::class.java)
 
+            val intent = Intent()
             var calendar = Calendar.getInstance()
             var hour = calendar.get(Calendar.HOUR)
             var minute = calendar.get(Calendar.MINUTE)
 
-            var time: Int = 0
+
             var listener = TimePickerDialog.OnTimeSetListener { timePicker, i, i2 ->
                 binding.timeButonText.text = "${i}시 ${i2}분"
-                time = i
+
                 Log.d(TAG, "${i}시 ${i2}분")
+                intent.putExtra("day_dialog", i2)
             }
-            intent.putExtra("time_holder", time)
 
-
-            var picker = TimePickerDialog(context!!, listener, hour, minute, false) // true하면 24시간 제
+            var picker = TimePickerDialog(context!!, listener, hour, minute, true) // true하면 24시간 제
             picker.show()
 
         }
-
 
     }
 

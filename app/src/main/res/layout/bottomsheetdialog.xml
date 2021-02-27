@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/botoom_dialog"
-    android:background="@drawable/background_radius">
+    android:background="@drawable/background_radius"
+   >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,23 +21,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="90dp"
+            android:layout_marginLeft="30dp"
             android:text="목표"
             android:textColor="@color/black"
             android:textSize="30dp" />
 
         <EditText
             android:id="@+id/time_goal"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginLeft="50dp"
             android:ems="10"
             android:hint="목표"
             android:inputType="text"
-            android:maxEms="10"
-            android:maxLength="10"
-            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="15dp"
             android:textStyle="bold" />
@@ -48,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
+
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -57,21 +57,23 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="90dp"
             android:text="날짜"
+            android:layout_marginLeft="30dp"
             android:textColor="@color/black"
             android:textSize="30dp" />
 
         <TextView
-            android:id="@+id/day_buton_text"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:textColor="@color/black"
             android:layout_marginLeft="50dp"
+            android:gravity="center"
+            android:id="@+id/day_buton_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textColor="@color/black"
             android:hint="2/17"
-            android:textSize="30dp"
-            android:textStyle="bold" />
+            android:textSize="30sp"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded" />
 
     </LinearLayout>
 
@@ -81,6 +83,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+
+        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.555"
@@ -91,14 +95,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="90dp"
+            android:layout_marginLeft="30dp"
             android:text="시간"
             android:textColor="@color/black"
             android:textSize="30dp" />
 
         <TextView
             android:id="@+id/time_buton_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginLeft="50dp"
@@ -115,6 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
+
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,6 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="248dp"
             android:text="취소"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -141,6 +147,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="248dp"
             android:text="수정"
+            android:layout_marginTop="30dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -148,9 +155,11 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
+            android:onClick="timeSave"
             android:id="@+id/time_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="248dp"
             android:text="저장"
             app:layout_constraintBottom_toBottomOf="parent"
